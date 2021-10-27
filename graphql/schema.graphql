@@ -1,0 +1,129 @@
+type Mutation {
+  addProject(input: ProjectCreateInput!): Project
+  addTask(input: TaskCreateInput!): Task
+  addComment(input: CommentCreateInput!): Comment
+  register(input: RegisterInput!): UserRegisterResponse
+  login(input: LoginInput!): AuthResponse
+}
+
+type Error {
+  message: String
+}
+
+type Query {
+  Projects: [Project]
+  Tasks: [Task]
+  Project(id: String): Project
+  Task(id: String): Task
+  User(id: String): User
+  Comments: [Comment]
+  Comment(id: String): Comment
+}
+
+scalar Date
+
+input CommentCreateInput {
+  userId: String!
+  taskId: String!
+  content: String!
+}
+
+input ProjectCreateInput {
+  userId: String!
+  name: String!
+  projectType: ProjectType!
+  description: String
+  color: String
+}
+
+input TaskCreateInput {
+  projectId: String!
+  title: String!
+  description: String
+  duration: Date
+}
+
+enum ProjectType {
+  development
+  music
+  video
+  fun
+  trading
+  love
+}
+
+type User {
+  id: String!
+  name: String!
+  address: String
+  phone: String
+  email: String!
+  salt: String
+  password: String!
+  projects: [Project]
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input RegisterInput {
+  name: String!
+  email: String!
+  phone: String!
+  address: String!
+  password: String!
+}
+
+type UserResponse {
+  name: String
+  email: String
+}
+
+type UserRegisterResponse {
+  id: String
+  name: String
+  email: String
+  phone: String
+  address: String
+  createdAt: String
+  updatedAt: String
+  error: String
+}
+
+type AuthResponse {
+  jwt: String
+  user: UserResponse
+  error: String
+}
+
+type Project {
+  id: String!
+  name: String!
+  projectType: ProjectType
+  description: String
+  color: String
+  tasks: [Task]
+  user: User!
+}
+
+type Task {
+  id: String
+  title: String
+  description: String
+  duration: Int
+  #Project related stuff
+  project: Project
+  projectId: String
+  #Comment related stuff
+  comments: [Comment]
+}
+
+type Comment {
+  id: String
+  userId: String
+  taskId: String
+  content: String
+  task: Task
+}
